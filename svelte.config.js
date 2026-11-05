@@ -14,9 +14,16 @@ const config = {
 		adapter: adapter(),
 		csp: {
 			directives: {
-				'script-src': ['self', 'https://hcaptcha.com', 'https://*.hcaptcha.com'],
+				'script-src': [
+					'self',
+					'https://hcaptcha.com',
+					'https://*.hcaptcha.com',
+					'sha256-SEJwuOsV2BEdExdZtKPHIGZl4GzvbPvEmyhJGnx06Q8=',
+					'sha256-+Zdb7cOa3waocVUG+VMQDPxZ2Uid7jf3qv/5X9qduRg=',
+				],
 				'frame-src': ['self', 'https://hcaptcha.com', 'https://*.hcaptcha.com'],
 				'style-src': ['self', 'https://hcaptcha.com', 'https://*.hcaptcha.com'],
+				'style-src-attr': ['unsafe-hashes', 'sha256-S8qMpvofolR8Mpjy4kQvEm7m1q8clzU4dfDH0AmvZjo='],
 				'connect-src': ['self', 'https://hcaptcha.com', 'https://*.hcaptcha.com'],
 			},
 		},
