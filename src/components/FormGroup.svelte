@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ISettings } from '../stores';
+	import type { ISettings } from '../stores/index.ts';
 
 	export let id: keyof ISettings;
 	export let label: string;

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { IStore } from '../stores';
+	import type { IStore } from '../stores/index.js';
 	import { fly, fade } from 'svelte/transition';
 
 	export let status: IStore['status'] = 'idle';

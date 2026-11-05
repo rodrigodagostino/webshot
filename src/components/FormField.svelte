@@ -27,11 +27,11 @@
 
 <div class="form-field" class:width-full={width === 'full'}>
 	{#if type === 'text'}
-		<label for={id} class="form-field__label">{label}</label>
+		<label for={String(id)} class="form-field__label">{label}</label>
 		<input
-			{id}
+			id={String(id)}
 			{type}
-			name={id}
+			name={String(id)}
 			class="form-field__input"
 			{placeholder}
 			{required}
@@ -39,11 +39,11 @@
 			on:change={debounce(handleOnChange, 400)}
 		/>
 	{:else if type === 'number'}
-		<label for={id} class="form-field__label">{label}</label>
+		<label for={String(id)} class="form-field__label">{label}</label>
 		<input
-			{id}
+			id={String(id)}
 			{type}
-			name={id}
+			name={String(id)}
 			class="form-field__input"
 			{placeholder}
 			{min}
@@ -53,8 +53,13 @@
 			on:change={debounce(handleOnChange, 400)}
 		/>
 	{:else if type === 'select'}
-		<label for={id} class="form-field__label">{label}</label>
-		<select {id} name={id} class="form-field__select" on:change={debounce(handleOnChange, 400)}>
+		<label for={String(id)} class="form-field__label">{label}</label>
+		<select
+			id={String(id)}
+			name={String(id)}
+			class="form-field__select"
+			on:change={debounce(handleOnChange, 400)}
+		>
 			{#if options}
 				{#each options as { label, value } (label)}
 					<option {value} selected={value === $store.settings[id]}>{label}</option>
@@ -63,14 +68,14 @@
 		</select>
 	{:else if type === 'checkbox'}
 		<input
-			{id}
+			id={String(id)}
 			{type}
-			name={id}
+			name={String(id)}
 			class="form-field__checkbox"
 			checked={!!$store.settings[id]}
 			on:change={debounce(handleOnChange, 400)}
 		/>
-		<label for={id} class="form-field__label">{label}</label>
+		<label for={String(id)} class="form-field__label">{label}</label>
 	{/if}
 </div>
 

@@ -1,8 +1,8 @@
 import puppeteer from 'puppeteer';
 
 import { error } from '@sveltejs/kit';
-import type { Actions, PageServerLoad } from './$types';
-import type { ISettings } from '../stores';
+import type { Actions, PageServerLoad } from './$types.js';
+import type { ISettings } from '../stores/index.js';
 import { HCAPTCHA_SECRET_KEY } from '$env/static/private';
 import { PUBLIC_MODE, PUBLIC_HCAPTCHA_SITE_KEY } from '$env/static/public';
 

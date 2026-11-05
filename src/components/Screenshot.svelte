@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { store } from '../stores/index';
+	import { store } from '../stores/index.js';
 	import { fly, fade } from 'svelte/transition';
 
 	const currentDate = new Date();
