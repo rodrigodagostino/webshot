@@ -1,6 +1,6 @@
 <script lang="ts">
 	import lodash from 'lodash';
-	import { setSetting, type ISettings, store } from '../stores';
+	import { setSetting, type ISettings, store } from '../stores/index.js';
 
 	export let id: keyof ISettings;
 	export let type: 'text' | 'number' | 'checkbox' | 'select' = 'text';
@@ -56,7 +56,7 @@
 		<label for={id} class="form-field__label">{label}</label>
 		<select {id} name={id} class="form-field__select" on:change={debounce(handleOnChange, 400)}>
 			{#if options}
-				{#each options as { label, value }}
+				{#each options as { label, value } (label)}
 					<option {value} selected={value === $store.settings[id]}>{label}</option>
 				{/each}
 			{/if}

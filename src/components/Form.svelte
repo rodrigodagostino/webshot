@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { setIsVerified, setScreenshot, setStatus, store } from '../stores';
+	import { setIsVerified, setScreenshot, setStatus, store } from '../stores/index.js';
+	import { resetHCaptcha } from '../utils/hcaptcha.js';
+	import { PUBLIC_MODE } from '$env/static/public';
 
 	import FormButton from './FormButton.svelte';
 	import FormField from './FormField.svelte';
 	import FormGroup from './FormGroup.svelte';
-	// import HCaptcha from './HCaptcha.svelte';
+	import HCaptcha from './HCaptcha.svelte';
 </script>
 
 <form
@@ -18,8 +20,8 @@
 		return ({ result }) => {
 			setStatus(result.type);
 			setIsVerified(false);
-			window.hcaptcha?.reset();
-			if (result.type === 'success') setScreenshot(result.data?.screenshot);
+			if (PUBLIC_MODE === 'production') resetHCaptcha();
+			if (result.type === 'success') setScreenshot(result.data?.screenshot as string);
 		};
 	}}
 >
@@ -58,12 +60,14 @@
 		required={true}
 		width="full"
 	/>
-	<!-- <HCaptcha /> -->
+	{#if PUBLIC_MODE === 'production'}
+		<HCaptcha />
+	{/if}
 	<FormButton
 		type="submit"
 		width="full"
-		isDisabled={// !$store.isVerified ||
-		$store.status === 'generating'}
+		isDisabled={(PUBLIC_MODE === 'production' && !$store.isVerified) ||
+			$store.status === 'generating'}
 	>
 		Capture
 	</FormButton>

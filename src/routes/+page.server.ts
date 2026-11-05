@@ -1,10 +1,10 @@
 import puppeteer from 'puppeteer';
 
-// import { error } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import type { ISettings } from '../stores';
-// import { HCAPTCHA_SECRET_KEY } from '$env/static/private';
-// import { PUBLIC_HCAPTCHA_SITE_KEY } from '$env/static/public';
+import { HCAPTCHA_SECRET_KEY } from '$env/static/private';
+import { PUBLIC_MODE, PUBLIC_HCAPTCHA_SITE_KEY } from '$env/static/public';
 
 export const load: PageServerLoad = ({ cookies }) => {
 	const settings = cookies.get('webshotSettings');
@@ -27,31 +27,51 @@ export const actions: Actions = {
 		const fileType = String(formData.get('fileType')) as ISettings['fileType'];
 		const fileQuality = Number(formData.get('fileQuality'));
 		const captureDelay = Number(formData.get('captureDelay'));
-		// const hCaptchaResponse = String(formData.get('h-captcha-response'));
+		const hCaptchaResponse = formData.get('h-captcha-response');
 
 		/**
 		 * Verify captcha.
 		 */
-		// const hCaptchaVerifyBody = new URLSearchParams({
-		// 	response: hCaptchaResponse,
-		// 	secret: HCAPTCHA_SECRET_KEY,
-		// 	sitekey: PUBLIC_HCAPTCHA_SITE_KEY,
-		// }).toString();
+		if (PUBLIC_MODE === 'production') {
+			if (typeof hCaptchaResponse !== 'string' || !hCaptchaResponse) {
+				throw error(400, 'Please complete hCaptcha verification.');
+			}
 
-		// const hCaptchaVerifyResponse = await fetch('https://hcaptcha.com/siteverify', {
-		// 	method: 'POST',
-		// 	credentials: 'omit',
-		// 	headers: {
-		// 		'Content-Type': 'application/x-www-form-urlencoded',
-		// 	},
-		// 	body: hCaptchaVerifyBody,
-		// });
+			let verificationData: unknown;
 
-		// const hCaptchaVerifyData = await hCaptchaVerifyResponse.json();
+			try {
+				const response = await fetch('https://api.hcaptcha.com/siteverify', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded',
+					},
+					body: new URLSearchParams({
+						secret: HCAPTCHA_SECRET_KEY,
+						sitekey: PUBLIC_HCAPTCHA_SITE_KEY,
+						response: hCaptchaResponse,
+					}),
+					signal: AbortSignal.timeout(10_000),
+				});
 
-		// if (!hCaptchaVerifyData.success) {
-		// 	throw error(400, 'There was an error during hCaptcha verification.');
-		// }
+				if (!response.ok) {
+					throw new Error('hCaptcha verification request failed.');
+				}
+
+				verificationData = await response.json();
+			} catch {
+				throw error(503, 'hCaptcha verification is temporarily unavailable. Please try again.');
+			}
+
+			const isVerified =
+				typeof verificationData === 'object' &&
+				verificationData !== null &&
+				'success' in verificationData &&
+				verificationData.success === true;
+
+			if (!isVerified) {
+				throw error(400, 'hCaptcha verification failed. Please complete the check again.');
+			}
+		}
 
 		/**
 		 * Generate screenshot.

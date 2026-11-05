@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { ActionData, PageServerData } from './$types';
-	import { setScreenshot, setSettings, setStatus, store } from '../stores/index';
+	import type { ActionData, PageServerData } from './$types.ts';
+	import { setScreenshot, setSettings, setStatus, store } from '../stores/index.js';
 
 	import Form from '../components/Form.svelte';
 	import Notification from '../components/Notification.svelte';
@@ -22,12 +22,11 @@
 </script>
 
 <svelte:head>
-	<title>Fleximple Webshot</title>
+	<title>Webshot</title>
 </svelte:head>
 
 <div class="container">
 	<header class="app-header">
-		<p class="app-eyebrow">Fleximple</p>
 		<h1 class="app-title">Webshot</h1>
 	</header>
 	<main class="app-main">
@@ -57,13 +56,6 @@
 		text-align: center;
 		line-height: 1;
 		text-transform: uppercase;
-	}
-
-	.app-eyebrow {
-		font-family: var(--font-secondary);
-		font-size: 1.5rem;
-		font-weight: 600;
-		margin-bottom: 0.25rem;
 	}
 
 	.app-title {
